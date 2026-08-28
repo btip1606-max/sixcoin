@@ -24,23 +24,23 @@ BITCOIN_INCLUDES=-I$(builddir) -I$(builddir)/obj $(BDB_CPPFLAGS) $(BOOST_CPPFLAG
 BITCOIN_INCLUDES += -I$(srcdir)/secp256k1/include
 BITCOIN_INCLUDES += $(UNIVALUE_CFLAGS)
 
-LIBDOGECOIN_SERVER=libdogecoin_server.a
-LIBDOGECOIN_COMMON=libdogecoin_common.a
-LIBDOGECOIN_CONSENSUS=libdogecoin_consensus.a
-LIBDOGECOIN_CLI=libdogecoin_cli.a
-LIBDOGECOIN_UTIL=libdogecoin_util.a
-LIBDOGECOIN_CRYPTO=crypto/libdogecoin_crypto.a
-LIBDOGECOINQT=qt/libdogecoinqt.a
+LIBsixcoin_SERVER=libsixcoin_server.a
+LIBsixcoin_COMMON=libsixcoin_common.a
+LIBsixcoin_CONSENSUS=libsixcoin_consensus.a
+LIBsixcoin_CLI=libsixcoin_cli.a
+LIBsixcoin_UTIL=libsixcoin_util.a
+LIBsixcoin_CRYPTO=crypto/libsixcoin_crypto.a
+LIBsixcoinQT=qt/libsixcoinqt.a
 LIBSECP256K1=secp256k1/libsecp256k1.la
 
 if ENABLE_ZMQ
-LIBDOGECOIN_ZMQ=libdogecoin_zmq.a
+LIBsixcoin_ZMQ=libsixcoin_zmq.a
 endif
 if BUILD_BITCOIN_LIBS
-LIBDOGECOINCONSENSUS=libdogecoinconsensus.la
+LIBsixcoinCONSENSUS=libsixcoinconsensus.la
 endif
 if ENABLE_WALLET
-LIBDOGECOIN_WALLET=libdogecoin_wallet.a
+LIBsixcoin_WALLET=libsixcoin_wallet.a
 endif
 
 $(LIBSECP256K1): $(wildcard secp256k1/src/*) $(wildcard secp256k1/include/*)
@@ -49,16 +49,16 @@ $(LIBSECP256K1): $(wildcard secp256k1/src/*) $(wildcard secp256k1/include/*)
 # Make is not made aware of per-object dependencies to avoid limiting building parallelization
 # But to build the less dependent modules first, we manually select their order here:
 EXTRA_LIBRARIES += \
-  $(LIBDOGECOIN_CRYPTO) \
-  $(LIBDOGECOIN_UTIL) \
-  $(LIBDOGECOIN_COMMON) \
-  $(LIBDOGECOIN_CONSENSUS) \
-  $(LIBDOGECOIN_SERVER) \
-  $(LIBDOGECOIN_CLI) \
-  $(LIBDOGECOIN_WALLET) \
-  $(LIBDOGECOIN_ZMQ)
+  $(LIBsixcoin_CRYPTO) \
+  $(LIBsixcoin_UTIL) \
+  $(LIBsixcoin_COMMON) \
+  $(LIBsixcoin_CONSENSUS) \
+  $(LIBsixcoin_SERVER) \
+  $(LIBsixcoin_CLI) \
+  $(LIBsixcoin_WALLET) \
+  $(LIBsixcoin_ZMQ)
 
-lib_LTLIBRARIES = $(LIBDOGECOINCONSENSUS)
+lib_LTLIBRARIES = $(LIBsixcoinCONSENSUS)
 
 bin_PROGRAMS =
 noinst_PROGRAMS =
@@ -66,11 +66,11 @@ TESTS =
 BENCHMARKS =
 
 if BUILD_BITCOIND
-  bin_PROGRAMS += dogecoind
+  bin_PROGRAMS += sixcoind
 endif
 
 if BUILD_BITCOIN_UTILS
-  bin_PROGRAMS += dogecoin-cli dogecoin-tx
+  bin_PROGRAMS += sixcoin-cli sixcoin-tx
 endif
 
 .PHONY: FORCE check-symbols check-security
@@ -100,10 +100,10 @@ BITCOIN_CORE_H = \
   core_io.h \
   core_memusage.h \
   cuckoocache.h \
-  dogecoin.cpp \
-  dogecoin.h \
-  dogecoin-fees.cpp \
-  dogecoin-fees.h \
+  sixcoin.cpp \
+  sixcoin.h \
+  sixcoin-fees.cpp \
+  sixcoin-fees.h \
   fs.h \
   httprpc.h \
   httpserver.h \
@@ -185,12 +185,12 @@ obj/build.h: FORCE
 	@$(MKDIR_P) $(builddir)/obj
 	@$(top_srcdir)/share/genbuild.sh $(abs_top_builddir)/src/obj/build.h \
 	  $(abs_top_srcdir)
-libdogecoin_util_a-clientversion.$(OBJEXT): obj/build.h
+libsixcoin_util_a-clientversion.$(OBJEXT): obj/build.h
 
 # server: shared between bitcoind and bitcoin-qt
-libdogecoin_server_a_CPPFLAGS = $(AM_CPPFLAGS) $(BITCOIN_INCLUDES) $(MINIUPNPC_CPPFLAGS) $(EVENT_CFLAGS) $(EVENT_PTHREADS_CFLAGS)
-libdogecoin_server_a_CXXFLAGS = $(AM_CXXFLAGS) $(PIE_FLAGS)
-libdogecoin_server_a_SOURCES = \
+libsixcoin_server_a_CPPFLAGS = $(AM_CPPFLAGS) $(BITCOIN_INCLUDES) $(MINIUPNPC_CPPFLAGS) $(EVENT_CFLAGS) $(EVENT_PTHREADS_CFLAGS)
+libsixcoin_server_a_CXXFLAGS = $(AM_CXXFLAGS) $(PIE_FLAGS)
+libsixcoin_server_a_SOURCES = \
   addrman.cpp \
   addrdb.cpp \
   bloom.cpp \
@@ -232,9 +232,9 @@ libdogecoin_server_a_SOURCES = \
   $(BITCOIN_CORE_H)
 
 if ENABLE_ZMQ
-libdogecoin_zmq_a_CPPFLAGS = $(BITCOIN_INCLUDES) $(ZMQ_CFLAGS)
-libdogecoin_zmq_a_CXXFLAGS = $(AM_CXXFLAGS) $(PIE_FLAGS)
-libdogecoin_zmq_a_SOURCES = \
+libsixcoin_zmq_a_CPPFLAGS = $(BITCOIN_INCLUDES) $(ZMQ_CFLAGS)
+libsixcoin_zmq_a_CXXFLAGS = $(AM_CXXFLAGS) $(PIE_FLAGS)
+libsixcoin_zmq_a_SOURCES = \
   zmq/zmqabstractnotifier.cpp \
   zmq/zmqnotificationinterface.cpp \
   zmq/zmqpublishnotifier.cpp
@@ -243,9 +243,9 @@ endif
 
 # wallet: shared between bitcoind and bitcoin-qt, but only linked
 # when wallet enabled
-libdogecoin_wallet_a_CPPFLAGS = $(AM_CPPFLAGS) $(BITCOIN_INCLUDES)
-libdogecoin_wallet_a_CXXFLAGS = $(AM_CXXFLAGS) $(PIE_FLAGS)
-libdogecoin_wallet_a_SOURCES = \
+libsixcoin_wallet_a_CPPFLAGS = $(AM_CPPFLAGS) $(BITCOIN_INCLUDES)
+libsixcoin_wallet_a_CXXFLAGS = $(AM_CXXFLAGS) $(PIE_FLAGS)
+libsixcoin_wallet_a_SOURCES = \
   wallet/crypter.cpp \
   wallet/db.cpp \
   wallet/rpcdump.cpp \
@@ -257,9 +257,9 @@ libdogecoin_wallet_a_SOURCES = \
   $(BITCOIN_CORE_H)
 
 # crypto primitives library
-crypto_libdogecoin_crypto_a_CPPFLAGS = $(AM_CPPFLAGS) $(BITCOIN_CONFIG_INCLUDES)
-crypto_libdogecoin_crypto_a_CXXFLAGS = $(AM_CXXFLAGS) $(PIE_FLAGS)
-crypto_libdogecoin_crypto_a_SOURCES = \
+crypto_libsixcoin_crypto_a_CPPFLAGS = $(AM_CPPFLAGS) $(BITCOIN_CONFIG_INCLUDES)
+crypto_libsixcoin_crypto_a_CXXFLAGS = $(AM_CXXFLAGS) $(PIE_FLAGS)
+crypto_libsixcoin_crypto_a_SOURCES = \
   crypto/aes.cpp \
   crypto/aes.h \
   crypto/chacha20.h \
@@ -282,13 +282,13 @@ crypto_libdogecoin_crypto_a_SOURCES = \
 
 # only include SSE2 scrypt sources if USE_SCRYPT_SSE2 is defined
 if USE_SCRYPT_SSE2
-crypto_libdogecoin_crypto_a_SOURCES += crypto/scrypt-sse2.cpp
+crypto_libsixcoin_crypto_a_SOURCES += crypto/scrypt-sse2.cpp
 endif
 
 # consensus: shared between all executables that validate any consensus rules.
-libdogecoin_consensus_a_CPPFLAGS = $(AM_CPPFLAGS) $(BITCOIN_INCLUDES)
-libdogecoin_consensus_a_CXXFLAGS = $(AM_CXXFLAGS) $(PIE_FLAGS)
-libdogecoin_consensus_a_SOURCES = \
+libsixcoin_consensus_a_CPPFLAGS = $(AM_CPPFLAGS) $(BITCOIN_INCLUDES)
+libsixcoin_consensus_a_CXXFLAGS = $(AM_CXXFLAGS) $(PIE_FLAGS)
+libsixcoin_consensus_a_SOURCES = \
   amount.h \
   arith_uint256.cpp \
   arith_uint256.h \
@@ -323,9 +323,9 @@ libdogecoin_consensus_a_SOURCES = \
   version.h
 
 # common: shared between bitcoind, and bitcoin-qt and non-server tools
-libdogecoin_common_a_CPPFLAGS = $(AM_CPPFLAGS) $(BITCOIN_INCLUDES)
-libdogecoin_common_a_CXXFLAGS = $(AM_CXXFLAGS) $(PIE_FLAGS)
-libdogecoin_common_a_SOURCES = \
+libsixcoin_common_a_CPPFLAGS = $(AM_CPPFLAGS) $(BITCOIN_INCLUDES)
+libsixcoin_common_a_CXXFLAGS = $(AM_CXXFLAGS) $(PIE_FLAGS)
+libsixcoin_common_a_SOURCES = \
   amount.cpp \
   arith_uint256.cpp \
   auxpow.cpp \
@@ -352,9 +352,9 @@ libdogecoin_common_a_SOURCES = \
 # util: shared between all executables.
 # This library *must* be included to make sure that the glibc
 # backward-compatibility objects and their sanity checks are linked.
-libdogecoin_util_a_CPPFLAGS = $(AM_CPPFLAGS) $(BITCOIN_INCLUDES)
-libdogecoin_util_a_CXXFLAGS = $(AM_CXXFLAGS) $(PIE_FLAGS)
-libdogecoin_util_a_SOURCES = \
+libsixcoin_util_a_CPPFLAGS = $(AM_CPPFLAGS) $(BITCOIN_INCLUDES)
+libsixcoin_util_a_CXXFLAGS = $(AM_CXXFLAGS) $(PIE_FLAGS)
+libsixcoin_util_a_SOURCES = \
   support/lockedpool.cpp \
   chainparamsbase.cpp \
   clientversion.cpp \
@@ -375,99 +375,99 @@ libdogecoin_util_a_SOURCES = \
 
 if GLIBC_BACK_COMPAT
 
-libdogecoin_util_a_SOURCES += compat/glibc_compat.cpp
+libsixcoin_util_a_SOURCES += compat/glibc_compat.cpp
 AM_LDFLAGS += $(COMPAT_LDFLAGS)
 
 endif
 
 # cli: shared between bitcoin-cli and bitcoin-qt
-libdogecoin_cli_a_CPPFLAGS = $(AM_CPPFLAGS) $(BITCOIN_INCLUDES)
-libdogecoin_cli_a_CXXFLAGS = $(AM_CXXFLAGS) $(PIE_FLAGS)
-libdogecoin_cli_a_SOURCES = \
+libsixcoin_cli_a_CPPFLAGS = $(AM_CPPFLAGS) $(BITCOIN_INCLUDES)
+libsixcoin_cli_a_CXXFLAGS = $(AM_CXXFLAGS) $(PIE_FLAGS)
+libsixcoin_cli_a_SOURCES = \
   rpc/client.cpp \
   $(BITCOIN_CORE_H)
 
-nodist_libdogecoin_util_a_SOURCES = $(srcdir)/obj/build.h
+nodist_libsixcoin_util_a_SOURCES = $(srcdir)/obj/build.h
 #
 
 # bitcoind binary #
-dogecoind_SOURCES = bitcoind.cpp
-dogecoind_CPPFLAGS = $(AM_CPPFLAGS) $(BITCOIN_INCLUDES)
-dogecoind_CXXFLAGS = $(AM_CXXFLAGS) $(PIE_FLAGS)
-dogecoind_LDFLAGS = $(RELDFLAGS) $(AM_LDFLAGS) $(LIBTOOL_APP_LDFLAGS)
+sixcoind_SOURCES = bitcoind.cpp
+sixcoind_CPPFLAGS = $(AM_CPPFLAGS) $(BITCOIN_INCLUDES)
+sixcoind_CXXFLAGS = $(AM_CXXFLAGS) $(PIE_FLAGS)
+sixcoind_LDFLAGS = $(RELDFLAGS) $(AM_LDFLAGS) $(LIBTOOL_APP_LDFLAGS)
 
 if TARGET_WINDOWS
-dogecoind_SOURCES += bitcoind-res.rc
+sixcoind_SOURCES += bitcoind-res.rc
 endif
 
-dogecoind_LDADD = \
-  $(LIBDOGECOIN_SERVER) \
-  $(LIBDOGECOIN_COMMON) \
+sixcoind_LDADD = \
+  $(LIBsixcoin_SERVER) \
+  $(LIBsixcoin_COMMON) \
   $(LIBUNIVALUE) \
-  $(LIBDOGECOIN_UTIL) \
-  $(LIBDOGECOIN_WALLET) \
-  $(LIBDOGECOIN_ZMQ) \
-  $(LIBDOGECOIN_CONSENSUS) \
-  $(LIBDOGECOIN_CRYPTO) \
+  $(LIBsixcoin_UTIL) \
+  $(LIBsixcoin_WALLET) \
+  $(LIBsixcoin_ZMQ) \
+  $(LIBsixcoin_CONSENSUS) \
+  $(LIBsixcoin_CRYPTO) \
   $(LIBLEVELDB) \
   $(LIBMEMENV) \
   $(LIBSECP256K1)
 
-dogecoind_LDADD += $(BOOST_LIBS) $(BDB_LIBS) $(SSL_LIBS) $(CRYPTO_LIBS) $(MINIUPNPC_LIBS) $(EVENT_PTHREADS_LIBS) $(EVENT_LIBS) $(ZMQ_LIBS)
+sixcoind_LDADD += $(BOOST_LIBS) $(BDB_LIBS) $(SSL_LIBS) $(CRYPTO_LIBS) $(MINIUPNPC_LIBS) $(EVENT_PTHREADS_LIBS) $(EVENT_LIBS) $(ZMQ_LIBS)
 
 # bitcoin-cli binary #
-dogecoin_cli_SOURCES = bitcoin-cli.cpp
-dogecoin_cli_CPPFLAGS = $(AM_CPPFLAGS) $(BITCOIN_INCLUDES) $(EVENT_CFLAGS)
-dogecoin_cli_CXXFLAGS = $(AM_CXXFLAGS) $(PIE_FLAGS)
-dogecoin_cli_LDFLAGS = $(RELDFLAGS) $(AM_LDFLAGS) $(LIBTOOL_APP_LDFLAGS)
+sixcoin_cli_SOURCES = bitcoin-cli.cpp
+sixcoin_cli_CPPFLAGS = $(AM_CPPFLAGS) $(BITCOIN_INCLUDES) $(EVENT_CFLAGS)
+sixcoin_cli_CXXFLAGS = $(AM_CXXFLAGS) $(PIE_FLAGS)
+sixcoin_cli_LDFLAGS = $(RELDFLAGS) $(AM_LDFLAGS) $(LIBTOOL_APP_LDFLAGS)
 
 if TARGET_WINDOWS
-dogecoin_cli_SOURCES += bitcoin-cli-res.rc
+sixcoin_cli_SOURCES += bitcoin-cli-res.rc
 endif
 
-dogecoin_cli_LDADD = \
-  $(LIBDOGECOIN_CLI) \
+sixcoin_cli_LDADD = \
+  $(LIBsixcoin_CLI) \
   $(LIBUNIVALUE) \
-  $(LIBDOGECOIN_UTIL) \
-  $(LIBDOGECOIN_CRYPTO)
+  $(LIBsixcoin_UTIL) \
+  $(LIBsixcoin_CRYPTO)
 
-dogecoin_cli_LDADD += $(BOOST_LIBS) $(SSL_LIBS) $(CRYPTO_LIBS) $(EVENT_LIBS)
+sixcoin_cli_LDADD += $(BOOST_LIBS) $(SSL_LIBS) $(CRYPTO_LIBS) $(EVENT_LIBS)
 #
 
 # bitcoin-tx binary #
-dogecoin_tx_SOURCES = bitcoin-tx.cpp
-dogecoin_tx_CPPFLAGS = $(AM_CPPFLAGS) $(BITCOIN_INCLUDES)
-dogecoin_tx_CXXFLAGS = $(AM_CXXFLAGS) $(PIE_FLAGS)
-dogecoin_tx_LDFLAGS = $(RELDFLAGS) $(AM_LDFLAGS) $(LIBTOOL_APP_LDFLAGS)
+sixcoin_tx_SOURCES = bitcoin-tx.cpp
+sixcoin_tx_CPPFLAGS = $(AM_CPPFLAGS) $(BITCOIN_INCLUDES)
+sixcoin_tx_CXXFLAGS = $(AM_CXXFLAGS) $(PIE_FLAGS)
+sixcoin_tx_LDFLAGS = $(RELDFLAGS) $(AM_LDFLAGS) $(LIBTOOL_APP_LDFLAGS)
 
 if TARGET_WINDOWS
-dogecoin_tx_SOURCES += bitcoin-tx-res.rc
+sixcoin_tx_SOURCES += bitcoin-tx-res.rc
 endif
 
-dogecoin_tx_LDADD = \
+sixcoin_tx_LDADD = \
   $(LIBUNIVALUE) \
-  $(LIBDOGECOIN_COMMON) \
-  $(LIBDOGECOIN_UTIL) \
-  $(LIBDOGECOIN_CONSENSUS) \
-  $(LIBDOGECOIN_CRYPTO) \
+  $(LIBsixcoin_COMMON) \
+  $(LIBsixcoin_UTIL) \
+  $(LIBsixcoin_CONSENSUS) \
+  $(LIBsixcoin_CRYPTO) \
   $(LIBSECP256K1)
 
-dogecoin_tx_LDADD += $(BOOST_LIBS) $(CRYPTO_LIBS)
+sixcoin_tx_LDADD += $(BOOST_LIBS) $(CRYPTO_LIBS)
 #
 
 # bitcoinconsensus library #
 if BUILD_BITCOIN_LIBS
 include_HEADERS = script/bitcoinconsensus.h
-libdogecoinconsensus_la_SOURCES = $(crypto_libdogecoin_crypto_a_SOURCES) $(libdogecoin_consensus_a_SOURCES)
+libsixcoinconsensus_la_SOURCES = $(crypto_libsixcoin_crypto_a_SOURCES) $(libsixcoin_consensus_a_SOURCES)
 
 if GLIBC_BACK_COMPAT
-  libdogecoinconsensus_la_SOURCES += compat/glibc_compat.cpp
+  libsixcoinconsensus_la_SOURCES += compat/glibc_compat.cpp
 endif
 
-libdogecoinconsensus_la_LDFLAGS = $(AM_LDFLAGS) -no-undefined $(RELDFLAGS)
-libdogecoinconsensus_la_LIBADD = $(LIBSECP256K1)
-libdogecoinconsensus_la_CPPFLAGS = $(AM_CPPFLAGS) -I$(builddir)/obj -I$(srcdir)/secp256k1/include -DBUILD_BITCOIN_INTERNAL
-libdogecoinconsensus_la_CXXFLAGS = $(AM_CXXFLAGS) $(PIE_FLAGS)
+libsixcoinconsensus_la_LDFLAGS = $(AM_LDFLAGS) -no-undefined $(RELDFLAGS)
+libsixcoinconsensus_la_LIBADD = $(LIBSECP256K1)
+libsixcoinconsensus_la_CPPFLAGS = $(AM_CPPFLAGS) -I$(builddir)/obj -I$(srcdir)/secp256k1/include -DBUILD_BITCOIN_INTERNAL
+libsixcoinconsensus_la_CXXFLAGS = $(AM_CXXFLAGS) $(PIE_FLAGS)
 
 endif
 #

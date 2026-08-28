@@ -2,17 +2,17 @@
 #
 # The relevant paths are:
 #
-#/usr/local/bin/dogecoind
-#/usr/local/etc/dogecoin/
-#/var/local/dogecoin/
+#/usr/local/bin/sixcoind
+#/usr/local/etc/sixcoin/
+#/var/local/sixcoin/
 
 [Unit]
-Description=Dogecoin's distributed currency daemon
+Description=sixcoin's distributed currency daemon
 After=network.target
 
 [Service]
 Type=simple
-ExecStart=/usr/local/bin/dogecoind -conf=/usr/local/etc/dogecoin/dogecoin.conf -datadir=/var/local/dogecoin
+ExecStart=/usr/local/bin/sixcoind -conf=/usr/local/etc/sixcoin/sixcoin.conf -datadir=/var/local/sixcoin
 
 KillSignal=SIGINT
 Restart=always
@@ -22,8 +22,8 @@ TimeoutStartSec=5
 StartLimitIntervalSec=120
 StartLimitBurst=5
 
-User=dogecoin
-Group=dogecoin
+User=sixcoin
+Group=sixcoin
 
 ### Restrict resource consumption
 MemoryAccounting=yes
@@ -40,8 +40,8 @@ TemporaryFileSystem=/:ro
 BindReadOnlyPaths=/etc/ /lib/ /lib64/
 
 # Add daemon paths
-BindReadOnlyPaths=/usr/local/bin/dogecoind /usr/local/etc/dogecoin/
-BindPaths=/var/local/dogecoin/
+BindReadOnlyPaths=/usr/local/bin/sixcoind /usr/local/etc/sixcoin/
+BindPaths=/var/local/sixcoin/
 
 ### Restrict access to system.
 
