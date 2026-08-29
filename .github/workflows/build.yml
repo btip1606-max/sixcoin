@@ -50,7 +50,7 @@ jobs:
       - name: Build
         run: |
           ./autogen.sh
-          ./configure --without-gui --with-incompatible-bdb --enable-wallet \
+          ./configure --without-gui --disable-wallet \
             LDFLAGS="-L$(brew --prefix openssl@3)/lib" \
             CPPFLAGS="-I$(brew --prefix openssl@3)/include"
           make -j$(sysctl -n hw.ncpu)
@@ -88,6 +88,7 @@ jobs:
             autoconf
             automake
             libtool
+            make
 
       - name: Build
         shell: msys2 {0}
