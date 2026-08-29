@@ -9,7 +9,6 @@
 #endif
 
 #include "init.h"
-#include <boost/placeholders.hpp>
 #include "addrman.h"
 #include "amount.h"
 #include "chain.h"

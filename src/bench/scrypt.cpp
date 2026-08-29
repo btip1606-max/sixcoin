@@ -1,4 +1,3 @@
-#include <boost/placeholders.hpp>
 #include <iostream>
 #include <vector>
 

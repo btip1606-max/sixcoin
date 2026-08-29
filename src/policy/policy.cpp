@@ -6,7 +6,6 @@
 
 // NOTE: This file is intended to be customised by the end user, and includes only local node policy logic
 
-#include <boost/placeholders.hpp>
 #include "policy/policy.h"
 
 #include "validation.h"

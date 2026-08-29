@@ -2,7 +2,6 @@
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#include <boost/placeholders.hpp>
 #include "data/script_tests.json.h"
 
 #include "core_io.h"

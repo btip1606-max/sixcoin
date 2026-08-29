@@ -2,7 +2,6 @@
 // Copyright (c) 2014 The sixcoin Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
-#include <boost/placeholders.hpp>
 #include <boost/test/unit_test.hpp>
 
 #include "crypto/scrypt.h"
