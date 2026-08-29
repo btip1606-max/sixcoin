@@ -3,6 +3,7 @@
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
+#include <boost/placeholders.hpp>
 #include "data/tx_invalid.json.h"
 #include "data/tx_valid.json.h"
 #include "test/test_bitcoin.h"

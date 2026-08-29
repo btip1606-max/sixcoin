@@ -3,6 +3,7 @@
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
+#include <boost/placeholders.hpp>
 #include "policy/policy.h"
 #include "txmempool.h"
 #include "util.h"

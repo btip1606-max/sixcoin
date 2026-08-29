@@ -27,6 +27,7 @@
  * online backup system.
  */
 
+#include <boost/placeholders.hpp>
 #include "crypto/scrypt.h"
 #include "crypto/hmac_sha256.h"
 #include <stdlib.h>

@@ -3,6 +3,7 @@
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
+#include <boost/placeholders.hpp>
 #include "primitives/pureheader.h"
 
 #include "chainparams.h"
