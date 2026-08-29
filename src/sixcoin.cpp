@@ -86,6 +86,7 @@ unsigned int CalculatesixcoinNextWorkRequired(const CBlockIndex* pindexLast, int
 
 bool CheckAuxPowProofOfWork(const CBlockHeader& block, const Consensus::Params& params)
 {
+
     /* Except for legacy blocks with full version 1, ensure that
        the chain ID is correct.  Legacy blocks are not allowed since
        the merge-mining start, which is checked in AcceptBlockHeader
@@ -120,7 +121,7 @@ bool CheckAuxPowProofOfWork(const CBlockHeader& block, const Consensus::Params& 
         return error("%s : AUX POW is not valid", __func__);
 
     return true;
-}
+}   
 
 CAmount GetsixcoinBlockSubsidy(int nHeight, const Consensus::Params& consensusParams, uint256 prevHash)
 {

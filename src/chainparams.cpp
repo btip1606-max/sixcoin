@@ -3,7 +3,8 @@
 // Copyright (c) 2022-2024 The sixcoin Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
-
+#include "arith_uint256.h"
+#include "uint256.h"
 #include "chainparams.h"
 #include "consensus/merkle.h"
 
@@ -85,7 +86,7 @@ public:
         consensus.BIP34Hash = uint256S("0x80d1364201e5df97e696c03bdd24dc885e8617b9de51e453c10a4f629b1e797a");
         consensus.BIP65Height = 3464751; // 34cd2cbba4ba366f47e5aa0db5f02c19eba2adf679ceb6653ac003bdc9a0ef1f - first v4 block after the last v3 block
         consensus.BIP66Height = 1034383; // 80d1364201e5df97e696c03bdd24dc885e8617b9de51e453c10a4f629b1e797a - this is the last block that could be v2, 1900 blocks past the last v2 block
-        consensus.powLimit = uint256S("0x00000fffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"); // ~uint256(0) >> 20;
+        consensus.powLimit = uint256S("7fffff0000000000000000000000000000000000000000000000000000000000"); // ~uint256(0) >> 20;
         consensus.nPowTargetTimespan = 4 * 60 * 60; // pre-digishield: 4 hours
         consensus.nPowTargetSpacing = 60; // 1 minute
         consensus.fDigishieldDifficultyCalculation = false;
@@ -133,7 +134,7 @@ public:
         // Blocks 371337+ are AuxPoW
         auxpowConsensus = digishieldConsensus;
         auxpowConsensus.nHeightEffective = 371337;
-        auxpowConsensus.fAllowLegacyBlocks = false;
+        auxpowConsensus.fAllowLegacyBlocks = true;
 
         // Assemble the binary search tree of consensus parameters
         pConsensusRoot = &digishieldConsensus;
@@ -152,12 +153,11 @@ public:
         nDefaultPort = 33666;
         nPruneAfterHeight = 100000;
 
-        genesis = CreateGenesisBlock(1386325540, 99943, 0x1e0ffff0, 1, 88 * COIN);
-
+        genesis = CreateGenesisBlock(1787904000, 0, 0x207fffff, 1, 70 * COIN);
         consensus.hashGenesisBlock = genesis.GetHash();
         digishieldConsensus.hashGenesisBlock = consensus.hashGenesisBlock;
         auxpowConsensus.hashGenesisBlock = consensus.hashGenesisBlock;
-        //assert(consensus.hashGenesisBlock == uint256S("0x1a91e3dace36e2be3bf030a65679fe821aa1d6ef92e7c9902eb318182c355691"));
+        assert(consensus.hashGenesisBlock == uint256S("edec271f47b7fa45f9b5a996f96771ab2f4eb7d5fa008cb4d4b0b0525876706e"));
         //assert(genesis.hashMerkleRoot == uint256S("0x5b2a3f53f605d62c53e62932dac6925e3d74afa5a4b459745c36d42d0ed26a69"));
 
         // Note that of those with the service bits flag, most only support a subset of possible options
@@ -222,7 +222,7 @@ public:
         consensus.BIP34Hash = uint256S("0x21b8b97dcdb94caa67c7f8f6dbf22e61e0cfe0e46e1fff3528b22864659e9b38");
         consensus.BIP65Height = 1854705; // 955bd496d23790aba1ecfacb722b089a6ae7ddabaedf7d8fb0878f48308a71f9
         consensus.BIP66Height = 708658; // 21b8b97dcdb94caa67c7f8f6dbf22e61e0cfe0e46e1fff3528b22864659e9b38 - this is the last block that could be v2, 1900 blocks past the last v2 block
-        consensus.powLimit = uint256S("0x00000fffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"); // ~uint256(0) >> 20;
+        consensus.powLimit = uint256S("7fffff0000000000000000000000000000000000000000000000000000000000"); // ~uint256(0) >> 20;
         consensus.nPowTargetTimespan = 4 * 60 * 60; // pre-digishield: 4 hours
         consensus.nPowTargetSpacing = 60; // 1 minute
         consensus.fPowNoRetargeting = false;
@@ -274,7 +274,7 @@ public:
         auxpowConsensus = minDifficultyConsensus;
         auxpowConsensus.nHeightEffective = 158100;
         auxpowConsensus.fPowAllowDigishieldMinDifficultyBlocks = true;
-        auxpowConsensus.fAllowLegacyBlocks = false;
+        auxpowConsensus.fAllowLegacyBlocks = true;
 
         // Assemble the binary search tree of parameters
         pConsensusRoot = &digishieldConsensus;
@@ -347,7 +347,7 @@ public:
         consensus.BIP34Hash = uint256();
         consensus.BIP65Height = 1351; // BIP65 activated on regtest (Used in rpc activation tests)
         consensus.BIP66Height = 1251; // BIP66 activated on regtest (Used in rpc activation tests)
-        consensus.powLimit = uint256S("0x7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"); // ~uint256(0) >> 1;
+        consensus.powLimit = uint256S("7fffff0000000000000000000000000000000000000000000000000000000000"); // ~uint256(0) >> 1;
         consensus.nPowTargetTimespan = 4 * 60 * 60; // pre-digishield: 4 hours
         consensus.nPowTargetSpacing = 1; // regtest: 1 second blocks
         consensus.fDigishieldDifficultyCalculation = false;
@@ -386,7 +386,7 @@ public:
         digishieldConsensus.fDigishieldDifficultyCalculation = true;
 
         auxpowConsensus = digishieldConsensus;
-        auxpowConsensus.fAllowLegacyBlocks = false;
+        auxpowConsensus.fAllowLegacyBlocks = true;
         auxpowConsensus.nHeightEffective = 20;
 
         // Assemble the binary search tree of parameters
