@@ -49,7 +49,6 @@ jobs:
 
       - name: Build
         run: |
-          export BOOST_ROOT=$(brew --prefix boost)
           ./autogen.sh
           ./configure --without-gui --disable-wallet \
             --with-boost=$(brew --prefix boost) \
@@ -97,6 +96,7 @@ jobs:
         run: |
           ./autogen.sh
           ./configure --without-gui --disable-wallet \
+            --with-boost=/mingw64 \
             --with-boost-libdir=/mingw64/lib
           make -j$(nproc)
 
