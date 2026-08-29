@@ -44,7 +44,8 @@ jobs:
 
       - name: Install deps
         run: |
-          brew install boost libevent openssl@3 zeromq protobuf pkg-config autoconf automake libtool
+          brew install boost libevent openssl@3 zeromq protobuf pkg-config \
+            autoconf automake libtool
 
       - name: Build
         run: |
@@ -78,20 +79,20 @@ jobs:
           install: >-
             mingw-w64-x86_64-toolchain
             mingw-w64-x86_64-boost
-            mingw-w64-x86_64-filesystem
             mingw-w64-x86_64-libevent
             mingw-w64-x86_64-openssl
             mingw-w64-x86_64-zeromq
             mingw-w64-x86_64-protobuf
-            mingw-w64-x86_64-db
-            mingw-w64-x86_64-autotools
             mingw-w64-x86_64-pkgconf
+            autoconf
+            automake
+            libtool
 
       - name: Build
         shell: msys2 {0}
         run: |
           ./autogen.sh
-          ./configure --without-gui --with-incompatible-bdb --enable-wallet
+          ./configure --without-gui --disable-wallet
           make -j$(nproc)
 
       - name: Verify binaries
