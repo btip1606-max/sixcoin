@@ -54,8 +54,8 @@ jobs:
           ./autogen.sh
           ./configure --without-gui --disable-wallet \
             --with-boost=${BOOST_PREFIX} \
-            LDFLAGS="-L$(brew --prefix openssl@3)/lib -L${BOOST_PREFIX}/lib" \
-            CPPFLAGS="-I$(brew --prefix openssl@3)/include -I${BOOST_PREFIX}/include"
+            CPPFLAGS="-I${BOOST_PREFIX}/include -I$(brew --prefix openssl@3)/include" \
+            LDFLAGS="-L$(brew --prefix openssl@3)/lib -L${BOOST_PREFIX}/lib"
           make -j$(sysctl -n hw.ncpu)
 
       - name: Verify binaries
@@ -100,7 +100,8 @@ jobs:
           ./configure --without-gui --disable-wallet \
             --with-boost=/mingw64 \
             --with-boost-libdir=/mingw64/lib \
-            CPPFLAGS="-I/mingw64/include"
+            CPPFLAGS="-I/mingw64/include" \
+            CXXFLAGS="-std=c++14"
           make -j$(nproc)
 
       - name: Verify binaries
