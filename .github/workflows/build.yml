@@ -44,7 +44,7 @@ jobs:
 
       - name: Install deps
         run: |
-          brew install boost libevent openssl@3 zeromq protobuf pkg-config
+          brew install boost libevent openssl@3 zeromq protobuf pkg-config autoconf automake libtool
 
       - name: Build
         run: |
@@ -78,6 +78,7 @@ jobs:
           install: >-
             mingw-w64-x86_64-toolchain
             mingw-w64-x86_64-boost
+            mingw-w64-x86_64-filesystem
             mingw-w64-x86_64-libevent
             mingw-w64-x86_64-openssl
             mingw-w64-x86_64-zeromq
