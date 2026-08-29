@@ -1,74 +1,60 @@
-name: Build SixCoin
+name: Build Windows
 
 on:
   push:
-    branches: [ main, master ]
-  release:
-    types: [created]
+    branches:
+      - master
+  workflow_dispatch:
 
 jobs:
-  build-linux:
-    runs-on: ubuntu-latest
+  build-windows:
+    runs-on: ubuntu-22.04
     steps:
       - uses: actions/checkout@v4
 
-      - name: Install deps
+      - name: Install dependencies
         run: |
-          sudo apt-get update
-          sudo apt-get install -y build-essential libboost-all-dev libevent-dev \
-            libssl-dev libzmq3-dev libprotobuf-dev protobuf-compiler \
-            libdb++-dev libdb-dev pkgconf automake libtool autoconf
+          sudo apt update
+          sudo apt install -y \
+            build-essential libtool autotools-dev automake pkg-config \
+            bsdmainutils curl nsis g++-mingw-w64-x86-64 mingw-w64 \
+            python3 cmake
 
-      - name: Build
+      - name: Cache depends
+        uses: actions/cache@v4
+        with:
+          path: depends/x86_64-w64-mingw32
+          key: depends-mingw-${{ hashFiles('depends/packages/*.mk') }}
+          restore-keys: depends-mingw-
+
+      - name: Build depends
+        run: |
+          cd depends
+          make HOST=x86_64-w64-mingw32 -j$(nproc) NO_QT=1
+
+      - name: Configure and build
         run: |
           ./autogen.sh
-          ./configure --without-gui --with-incompatible-bdb --enable-wallet \
-            --with-boost=/usr
+          CONFIG_SITE=$PWD/depends/x86_64-w64-mingw32/share/config.site \
+          ./configure \
+            --prefix=/ \
+            --without-gui \
+            --disable-tests \
+            --disable-bench \
+            --disable-man \
+            --with-wallet \
+            --enable-static \
+            LDFLAGS="-static-libgcc -static-libstdc++ -static"
           make -j$(nproc) sixcoind sixcoin-cli
 
       - name: Verify binaries
         run: |
-          ls -la src/sixcoind src/sixcoin-cli
+          ls -la src/sixcoind.exe src/sixcoin-cli.exe
 
-      - name: Upload artifact
+      - name: Upload binaries
         uses: actions/upload-artifact@v4
         with:
-          name: sixcoin-linux
+          name: windows-binaries
           path: |
-            src/sixcoind
-            src/sixcoin-cli
-
-  build-macos:
-    runs-on: macos-latest
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Install deps
-        run: |
-          brew install boost libevent openssl@3 zeromq protobuf pkg-config \
-            autoconf automake libtool
-
-      - name: Build
-        run: |
-          BOOST_PREFIX=$(brew --prefix boost)
-          ./autogen.sh
-          ./configure --without-gui --disable-wallet \
-            --with-boost=${BOOST_PREFIX} \
-            CPPFLAGS="-I${BOOST_PREFIX}/include -I$(brew --prefix openssl@3)/include" \
-            LDFLAGS="-L$(brew --prefix openssl@3)/lib -L${BOOST_PREFIX}/lib" \
-            CXXFLAGS="-std=c++14"
-          make -j$(sysctl -n hw.ncpu) sixcoind sixcoin-cli
-
-      - name: Verify binaries
-        run: |
-          ls -la src/sixcoind src/sixcoin-cli
-
-      - name: Upload artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: sixcoin-macos
-          path: |
-            src/sixcoind
-            src/sixcoin-cli
-
-  build-windows:   
+            src/sixcoind.exe
+            src/sixcoin-cli.exe   
