@@ -39,6 +39,7 @@ jobs:
           ./configure \
             --prefix=/ \
             --without-gui \
+            --without-zmq \
             --disable-tests \
             --disable-bench \
             --disable-man \
