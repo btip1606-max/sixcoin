@@ -21,9 +21,9 @@ jobs:
 
       - name: Build
         run: |
-          export CXXFLAGS="-I/usr/include"
           ./autogen.sh
-          ./configure --without-gui --with-incompatible-bdb --enable-wallet
+          ./configure --without-gui --with-incompatible-bdb --enable-wallet \
+            --with-boost=/usr
           make -j$(nproc)
 
       - name: Verify binaries
@@ -51,12 +51,11 @@ jobs:
       - name: Build
         run: |
           BOOST_PREFIX=$(brew --prefix boost)
-          export CXXFLAGS="-I${BOOST_PREFIX}/include"
-          export CPPFLAGS="-I${BOOST_PREFIX}/include -I$(brew --prefix openssl@3)/include"
-          export LDFLAGS="-L$(brew --prefix openssl@3)/lib"
           ./autogen.sh
           ./configure --without-gui --disable-wallet \
-            --with-boost=${BOOST_PREFIX}
+            --with-boost=${BOOST_PREFIX} \
+            LDFLAGS="-L$(brew --prefix openssl@3)/lib -L${BOOST_PREFIX}/lib" \
+            CPPFLAGS="-I$(brew --prefix openssl@3)/include -I${BOOST_PREFIX}/include"
           make -j$(sysctl -n hw.ncpu)
 
       - name: Verify binaries
@@ -97,12 +96,11 @@ jobs:
       - name: Build
         shell: msys2 {0}
         run: |
-          export CXXFLAGS="-I/mingw64/include"
-          export CPPFLAGS="-I/mingw64/include"
           ./autogen.sh
           ./configure --without-gui --disable-wallet \
             --with-boost=/mingw64 \
-            --with-boost-libdir=/mingw64/lib
+            --with-boost-libdir=/mingw64/lib \
+            CPPFLAGS="-I/mingw64/include"
           make -j$(nproc)
 
       - name: Verify binaries
