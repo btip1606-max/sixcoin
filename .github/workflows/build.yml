@@ -49,11 +49,12 @@ jobs:
 
       - name: Build
         run: |
+          export CXXFLAGS="-I$(brew --prefix boost)/include"
+          export CPPFLAGS="-I$(brew --prefix boost)/include -I$(brew --prefix openssl@3)/include"
+          export LDFLAGS="-L$(brew --prefix openssl@3)/lib"
           ./autogen.sh
           ./configure --without-gui --disable-wallet \
-            --with-boost=$(brew --prefix boost) \
-            LDFLAGS="-L$(brew --prefix openssl@3)/lib" \
-            CPPFLAGS="-I$(brew --prefix openssl@3)/include"
+            --with-boost=$(brew --prefix boost)
           make -j$(sysctl -n hw.ncpu)
 
       - name: Verify binaries
@@ -94,6 +95,8 @@ jobs:
       - name: Build
         shell: msys2 {0}
         run: |
+          export CXXFLAGS="-I/mingw64/include"
+          export CPPFLAGS="-I/mingw64/include"
           ./autogen.sh
           ./configure --without-gui --disable-wallet \
             --with-boost=/mingw64 \
