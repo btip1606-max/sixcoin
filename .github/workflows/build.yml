@@ -49,8 +49,10 @@ jobs:
 
       - name: Build
         run: |
+          export BOOST_ROOT=$(brew --prefix boost)
           ./autogen.sh
           ./configure --without-gui --disable-wallet \
+            --with-boost=$(brew --prefix boost) \
             LDFLAGS="-L$(brew --prefix openssl@3)/lib" \
             CPPFLAGS="-I$(brew --prefix openssl@3)/include"
           make -j$(sysctl -n hw.ncpu)
