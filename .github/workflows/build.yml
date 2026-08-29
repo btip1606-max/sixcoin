@@ -1,0 +1,115 @@
+name: Build SixCoin
+
+on:
+  push:
+    branches: [ main, master ]
+  release:
+    types: [created]
+
+jobs:
+  build-linux:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install deps
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y build-essential libboost-all-dev libevent-dev \
+            libssl-dev libzmq3-dev libprotobuf-dev protobuf-compiler \
+            libdb++-dev libdb-dev pkgconf automake libtool autoconf
+
+      - name: Build
+        run: |
+          ./autogen.sh
+          ./configure --without-gui --with-incompatible-bdb --enable-wallet
+          make -j$(nproc)
+
+      - name: Verify binaries
+        run: |
+          ls -la src/sixcoind src/sixcoin-cli
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: sixcoin-linux
+          path: |
+            src/sixcoind
+            src/sixcoin-cli
+
+  build-macos:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install deps
+        run: |
+          brew install boost libevent openssl@3 zeromq protobuf pkg-config
+
+      - name: Build
+        run: |
+          ./autogen.sh
+          ./configure --without-gui --with-incompatible-bdb --enable-wallet \
+            LDFLAGS="-L$(brew --prefix openssl@3)/lib" \
+            CPPFLAGS="-I$(brew --prefix openssl@3)/include"
+          make -j$(sysctl -n hw.ncpu)
+
+      - name: Verify binaries
+        run: |
+          ls -la src/sixcoind src/sixcoin-cli
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: sixcoin-macos
+          path: |
+            src/sixcoind
+            src/sixcoin-cli
+
+  build-windows:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup MSYS2
+        uses: msys2/setup-msys2@v2
+        with:
+          msystem: MINGW64
+          install: >-
+            mingw-w64-x86_64-toolchain
+            mingw-w64-x86_64-boost
+            mingw-w64-x86_64-libevent
+            mingw-w64-x86_64-openssl
+            mingw-w64-x86_64-zeromq
+            mingw-w64-x86_64-protobuf
+            mingw-w64-x86_64-berkeley-db
+            mingw-w64-x86_64-automake
+            mingw-w64-x86_64-libtool
+            mingw-w64-x86_64-pkgconf
+            mingw-w64-x86_64-berkeley-db-cxx
+
+      - name: Build
+        shell: msys2 {0}
+        run: |
+          ./autogen.sh
+          ./configure --without-gui --with-incompatible-bdb --enable-wallet
+          make -j$(nproc)
+
+      - name: Verify binaries
+        shell: msys2 {0}
+        run: |
+          ls -la src/sixcoind src/sixcoin-cli
+
+      - name: Rename to .exe
+        shell: msys2 {0}
+        run: |
+          cp src/sixcoind sixcoind.exe
+          cp src/sixcoin-cli sixcoin-cli.exe
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: sixcoin-windows
+          path: |
+            sixcoind.exe
+            sixcoin-cli.exe   
