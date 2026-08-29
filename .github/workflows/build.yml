@@ -55,7 +55,8 @@ jobs:
           ./configure --without-gui --disable-wallet \
             --with-boost=${BOOST_PREFIX} \
             CPPFLAGS="-I${BOOST_PREFIX}/include -I$(brew --prefix openssl@3)/include" \
-            LDFLAGS="-L$(brew --prefix openssl@3)/lib -L${BOOST_PREFIX}/lib"
+            LDFLAGS="-L$(brew --prefix openssl@3)/lib -L${BOOST_PREFIX}/lib" \
+            CXXFLAGS="-std=c++14"
           make -j$(sysctl -n hw.ncpu)
 
       - name: Verify binaries
@@ -86,6 +87,7 @@ jobs:
             mingw-w64-x86_64-libevent
             mingw-w64-x86_64-openssl
             mingw-w64-x86_64-zeromq
+            mingw-w64-x86_64-libsodium
             mingw-w64-x86_64-protobuf
             mingw-w64-x86_64-pkgconf
             autoconf
@@ -101,7 +103,8 @@ jobs:
             --with-boost=/mingw64 \
             --with-boost-libdir=/mingw64/lib \
             CPPFLAGS="-I/mingw64/include" \
-            CXXFLAGS="-std=c++14"
+            CXXFLAGS="-std=c++14" \
+            LDFLAGS="-lbcrypt -ladvapi32"
           make -j$(nproc)
 
       - name: Verify binaries
