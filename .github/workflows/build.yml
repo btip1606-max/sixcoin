@@ -31,7 +31,7 @@ jobs:
       - name: Build depends
         run: |
           cd depends
-          sed -i '/zeromq/d' x86_64-w64-mingw32.mk
+          find . -name "*.mk" -exec sed -i '/zeromq/d' {} \;
           make HOST=x86_64-w64-mingw32 -j$(nproc) NO_QT=1
 
       - name: Configure and build
